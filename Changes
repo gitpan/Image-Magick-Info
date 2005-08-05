@@ -1,6 +1,8 @@
 Revision history for Perl extension Image::Magick::Info.
 
+0.02  Thr Aug  4 10:00:00 2005
+  - can now pass in a filehandle OR a filename to get_info().
+
 0.01  Wed May  4 12:51:50 2005
-	- original version; created by h2xs 1.22 with options
-		Image::Magick::Info -X
+	- original version;
 

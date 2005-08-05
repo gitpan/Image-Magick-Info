@@ -13,15 +13,19 @@ our @ISA = qw(Exporter);
 
 our @EXPORT_OK = qw( get_info );
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 my $im = new Image::Magick;
 
 sub get_info{
   my ($filename, @info ) = @_;
 
-  $im->Read( $filename );
-    
+  if( ref $filename eq "GLOB" ){
+    $im->Read( FILE => $filename );
+  }else{
+    $im->Read( $filename );
+  }
+      
   my $ret;
   
   foreach my $i ( @info ){
@@ -49,23 +53,25 @@ Image::Magick::Info - Retreive image attributes with Image::Magick.
 
   use Image::Magick::Info qw( get_info );
 
-  my $info = get_info("/users/aroth/Desktop/photo.jpg", ("filesize","width","height") );
-  
+  my $info_fname   = get_info("/users/aroth/Desktop/photo.jpg", ("filesize","width","height") );
+  my $info_fhandle = get_info( $FILE_HANDLE, ("filesize") );
 
 
 =head1 DESCRIPTION
 
 This module is a thin wrapper over ImageMagick's getAttribute() function. There are
 faster modules out there (which don't rely on ImageMagick) that you may want to check
-out (see 'SEE ALSO'). 
+out (see 'SEE ALSO') -- (but for my use, they didn't return the filesize). 
 
 =head1 METHOD
 
-get_info( filename, attributes )
+get_info( filename|file_handle, attributes )
 
 =head2 PARAMETERS
 
 'filename' is the path of the source image.
+   OR 
+'filehandle' is a filehandle.
 
 'attributes' is a list of attributes you wish to retreive. 
 
@@ -76,8 +82,6 @@ A comprehensive list of all possible attributes can be found here at http://imag
  height
  format
  mime
-
- 
 
 =head2 RETURNS
 

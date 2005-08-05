@@ -13,19 +13,19 @@ our @ISA = qw(Exporter);
 
 our @EXPORT_OK = qw( get_info );
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 my $im = new Image::Magick;
 
 sub get_info{
   my ($filename, @info ) = @_;
 
-  if( ref $filename eq "GLOB" ){
+  if( ref $filename eq "GLOB" || ref $filename eq "IO::File" ){
     $im->Read( FILE => $filename );
   }else{
     $im->Read( $filename );
   }
-      
+  
   my $ret;
   
   foreach my $i ( @info ){
@@ -45,6 +45,7 @@ sub get_info{
 1;
 __END__
 
+
 =head1 NAME
 
 Image::Magick::Info - Retreive image attributes with Image::Magick.
@@ -53,25 +54,24 @@ Image::Magick::Info - Retreive image attributes with Image::Magick.
 
   use Image::Magick::Info qw( get_info );
 
-  my $info_fname   = get_info("/users/aroth/Desktop/photo.jpg", ("filesize","width","height") );
-  my $info_fhandle = get_info( $FILE_HANDLE, ("filesize") );
+  my $info = get_info("/users/aroth/Desktop/photo.jpg", ("filesize","width","height") );
+  my $info = get_info( $FILE_HANDLE, ("filesize") );
+  my $info = get_info( \*FILE, ("width","height") );
 
 
 =head1 DESCRIPTION
 
 This module is a thin wrapper over ImageMagick's getAttribute() function. There are
 faster modules out there (which don't rely on ImageMagick) that you may want to check
-out (see 'SEE ALSO') -- (but for my use, they didn't return the filesize). 
+out (see 'SEE ALSO'). 
 
 =head1 METHOD
 
-get_info( filename|file_handle, attributes )
+get_info( filename|filehandle, attributes )
 
 =head2 PARAMETERS
 
-'filename' is the path of the source image.
-   OR 
-'filehandle' is a filehandle.
+'filename' is the path of the source image (or a filehandle).
 
 'attributes' is a list of attributes you wish to retreive. 
 
@@ -102,6 +102,26 @@ get_info( filename, array_of_attributes )
 =head1 SEE ALSO
 
 L<Image::Size>
+
+L<Image::Info>
+
+L<Image::Magick::Thumbnail::Fixed>
+
+L<Image::Magick::Brand>
+
+=head1 AUTHOR
+
+Adam Roth, E<lt>aroth@cpan.orgE<gt>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2005 by Adam Roth
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself. 
+
+=cut
+
 
 L<Image::Info>
 
